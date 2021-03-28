@@ -7,7 +7,7 @@ import java.util.List;
 public class EmployeePayroll {
     private static final String URL = "jdbc:mysql://localhost:3306/EmployeePayroll?useSSL=false";
     private static final String user = "root";
-    private static final String password = "krishna7609";
+    private static final String password = "krishna";
     public List<EmployeePayrollData> employeePayrollData = new ArrayList<>();
     public Connection connection;
     public Statement statement = null;
@@ -31,8 +31,7 @@ public class EmployeePayroll {
         }
     }
 
-    public List<EmployeePayrollData> readData() {
-        String sql = "SELECT * FROM employee_details;";
+    public List<EmployeePayrollData> readData(String sql) {
         try {
             try {
                 if (connection == null || connection.isClosed())
@@ -40,7 +39,7 @@ public class EmployeePayroll {
             }
             catch (CustomException e) {
                 System.out.println(e);
-                this.establishConnection();
+                establishConnection();
             }
             ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
@@ -62,7 +61,7 @@ public class EmployeePayroll {
 
     public double updateEmployeeData(double salary, String name) {
         try {
-            this.establishConnection();
+            establishConnection();
             PreparedStatement preparedStatement = connection.prepareStatement("update employee_details set salary=? where name =?");
             preparedStatement.setDouble(1, salary);
             preparedStatement.setString(2,name);
@@ -71,7 +70,8 @@ public class EmployeePayroll {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        this.readData();
+        String sql = "SELECT * FROM employee_details;";
+        this.readData(sql);
         for (EmployeePayrollData data : employeePayrollData) {
             if(data.name.equals(name)){
                 return data.salary;
