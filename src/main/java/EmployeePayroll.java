@@ -79,4 +79,94 @@ public class EmployeePayroll {
         }
         return 0.0;
     }
+
+    public double calculatingSumByGender() {
+        establishConnection();
+        ResultSet resultSet;
+        double sum = 0;
+        try {
+            resultSet = statement.executeQuery("SELECT SUM(salary) FROM employee_details WHERE gender='M' GROUP BY gender;");
+            resultSet.next();
+            sum = resultSet.getDouble("SUM(salary)");
+            System.out.println(sum);
+            resultSet = statement.executeQuery("SELECT SUM(salary) FROM employee_details WHERE gender='F' GROUP BY gender;");
+            resultSet.next();
+            System.out.println(resultSet.getDouble("SUM(salary)"));
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return sum;
+    }
+
+    public double calculatingAverageByGender() {
+        establishConnection();
+        ResultSet resultSet;
+        double avg = 0;
+        try {
+            resultSet = statement.executeQuery("SELECT AVG (salary) FROM employee_details WHERE gender='M' GROUP BY gender;");
+            resultSet.next();
+            avg = resultSet.getDouble("AVG (salary)");
+            System.out.println(avg);
+            resultSet = statement.executeQuery("SELECT AVG (salary) FROM employee_details WHERE gender='F' GROUP BY gender;");
+            resultSet.next();
+            System.out.println(resultSet.getDouble("AVG (salary)"));
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return avg;
+    }
+
+    public double calculatingMaxByGender() {
+        establishConnection();
+        ResultSet resultSet;
+        double max = 0;
+        try {
+            resultSet = statement.executeQuery("SELECT MAX(salary) FROM employee_details WHERE gender='M' GROUP BY gender;");
+            resultSet.next();
+            max = resultSet.getDouble("MAX(salary)");
+            System.out.println(max);
+            resultSet = statement.executeQuery("SELECT MAX(salary) FROM employee_details WHERE gender='F' GROUP BY gender;");
+            resultSet.next();
+            System.out.println(resultSet.getDouble("MAX(salary)"));
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return max;
+    }
+
+    public double calculatingMinByGender() {
+        establishConnection();
+        ResultSet resultSet;
+        double min = 0;
+        try {
+            resultSet = statement.executeQuery("SELECT MIN(salary) FROM employee_details WHERE gender='M' GROUP BY gender;");
+            resultSet.next();
+            min = resultSet.getDouble("MIN(salary)");
+            System.out.println(min);
+            resultSet = statement.executeQuery("SELECT MIN(salary) FROM employee_details WHERE gender='F' GROUP BY gender;");
+            resultSet.next();
+            System.out.println(resultSet.getDouble("MIN(salary)"));
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return min;
+    }
+
+    public double calculatingCountByGender() {
+        establishConnection();
+        ResultSet resultSet;
+        double count = 0;
+        try {
+            resultSet = statement.executeQuery("SELECT COUNT(*) FROM employee_details WHERE gender='M' GROUP BY gender;");
+            resultSet.next();
+            count = resultSet.getDouble("COUNT(*)");
+            System.out.println(count);
+            resultSet = statement.executeQuery("SELECT COUNT(*) FROM employee_details WHERE gender='F' GROUP BY gender;");
+            resultSet.next();
+            System.out.println(resultSet.getDouble("COUNT(*)"));
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return count;
+    }
 }
