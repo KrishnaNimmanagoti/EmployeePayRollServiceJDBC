@@ -7,26 +7,20 @@ import java.util.List;
 public class EmployeePayroll {
     private static final String URL = "jdbc:mysql://localhost:3306/EmployeePayroll?useSSL=false";
     private static final String user = "root";
-    private static final String password = "krishna";
-    List<EmployeePayrollData> employeePayrollData = new ArrayList<>();
+    private static final String password = "krishna7609";
+    public List<EmployeePayrollData> employeePayrollData = new ArrayList<>();
+    public Connection connection;
+    public Statement statement = null;
 
-    private Connection establishConnection() {
-        Connection connection = null;
+    private void establishConnection() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            System.out.println("Driver found!");
-        } catch (ClassNotFoundException e) {
+            connection = DriverManager.getConnection(URL, user, password);
+            statement = connection.createStatement();
+        } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
         listDrivers();
-        try {
-            System.out.println("\nConnecting to database: " + URL);
-            connection = DriverManager.getConnection(URL, user, password);
-            System.out.println("Connection established with: " + connection);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return connection;
     }
 
     private void listDrivers() {
@@ -39,8 +33,15 @@ public class EmployeePayroll {
 
     public List<EmployeePayrollData> readData() {
         String sql = "SELECT * FROM employee_details;";
-        try (Connection connection = this.establishConnection()) {
-            Statement statement = connection.createStatement();
+        try {
+            try {
+                if (connection == null || connection.isClosed())
+                    throw new CustomException("Connection is not established");
+            }
+            catch (CustomException e) {
+                System.out.println(e);
+                this.establishConnection();
+            }
             ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
@@ -50,6 +51,7 @@ public class EmployeePayroll {
                 LocalDate startDate = resultSet.getDate("start").toLocalDate();
                 employeePayrollData.add(new EmployeePayrollData(id, name, gender, startDate, salary));
             }
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -59,13 +61,17 @@ public class EmployeePayroll {
     }
 
     public double updateEmployeeData(double salary, String name) {
-        String sql = String.format("update employee_details set salary = %.2f where name = '%s';", salary, name);
-        try (Connection connection = this.establishConnection()) {
-            Statement statement = connection.createStatement();
-            statement.executeUpdate(sql);
+        try {
+            this.establishConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement("update employee_details set salary=? where name =?");
+            preparedStatement.setDouble(1, salary);
+            preparedStatement.setString(2,name);
+            preparedStatement.executeUpdate();
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        this.readData();
         for (EmployeePayrollData data : employeePayrollData) {
             if(data.name.equals(name)){
                 return data.salary;

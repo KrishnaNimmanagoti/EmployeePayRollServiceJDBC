@@ -13,12 +13,11 @@ public class EmployeePayrollTest {
     }
 
     @Test
-    public void givenNewSalaryForEmployee_WhenUpdated_ShouldReturn1() {
+    public void updatingValueTest() {
         EmployeePayroll employeePayroll = new EmployeePayroll();
-        employeePayroll.readData();
-        double salary = 3000000.0;
+        double salary = 2000000.0;
         String name = "krishna";
-        double salaryUpdated = employeePayroll.updateEmployeeData(3000000.0, name);
+        double salaryUpdated = employeePayroll.updateEmployeeData(salary, name);
         Assertions.assertEquals(salary, salaryUpdated);
     }
 }
